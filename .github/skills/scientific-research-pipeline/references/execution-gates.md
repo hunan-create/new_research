@@ -33,14 +33,14 @@
 - [ ] `[RESULTS INCOMPLETE]` placeholders for any gaps
 
 ### Gate 6: Review Gate
-- [ ] `12_review_report.md` contains `## Overall Score: <number>/100`
+- [ ] `14_review_report.md` contains `## Overall Score: <number>/100`
 - [ ] Both strict and moderate reviewer perspectives included
 - [ ] Logical consistency audit performed
 
 ### Gate 7: Revision Gate
 - [ ] `state.json` contains `revision_round` ≥ 1
 - [ ] `blocker_log.jsonl` contains `revision-iteration` stop event
-- [ ] `13_revision_plan.md` references latest review concerns
+- [ ] `15_revision_plan.md` references latest review concerns
 - [ ] Stop condition documented (score threshold / patience / blocker)
 
 ## Rigor Enforcement Matrix

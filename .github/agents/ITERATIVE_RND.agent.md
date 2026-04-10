@@ -91,7 +91,7 @@ Output: write `iteration_audit.md` in the run directory.
 
 ## Paper Mode
 
-1. Read the latest paper draft (find highest version: `paper_draft_v*.md` or `11_paper_draft.md`).
+1. Read the latest paper draft (find highest version: `paper_draft_v*.md` or `12_paper_draft.md`).
 2. Read all result files in `results/` to find data not yet in the draft.
 3. Identify which tables/sections need updating.
 4. Delegate to WRITING_AGENT with precise instructions:
@@ -110,7 +110,7 @@ Output: write `iteration_audit.md` in the run directory.
 
 1. Read the latest paper draft.
 2. Delegate to REVIEWER_AGENT.
-3. Save review as next numbered review report (check existing `12_review_report*.md` files).
+3. Save review as next numbered review report (check existing `14_review_report*.md` files).
 4. Generate revision plan as next numbered plan.
 5. Update `state.json` with new review score and trajectory.
 
@@ -173,7 +173,7 @@ After every significant action, update `state.json`:
 
 ### Versioned Artifacts
 - Track paper draft versions: `paper_draft_v{N}.md`
-- Track review versions: `12_review_report_R{N}.md`, `13_revision_plan_R{N}.md`
+- Track review versions: `14_review_report_R{N}.md`, `15_revision_plan_R{N}.md`
 - Track result versions: `summary_v{N}*.json`
 - Never delete old versions — they form the audit trail.
 

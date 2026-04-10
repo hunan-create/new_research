@@ -128,10 +128,11 @@ All artifacts are saved under `research_runs/<topic_slug>/<run_id>/`:
 | `08_debug_log.md` | Errors, root causes, fixes |
 | `09_experiment_results.md` | Result tables (mean ± std) |
 | `10_iteration_decisions.md` | Keep / pivot / stop rationale |
-| `11_paper_draft.md` | Manuscript draft |
-| `12_review_report.md` | Simulated peer review |
-| `13_revision_plan.md` | Prioritized revision checklist |
-| `14_truthfulness_report.md` | Paper truthfulness verification report |
+| `11_theoretical_analysis.md` | Theoretical analysis (complexity, convergence, bounds) |
+| `12_paper_draft.md` | Manuscript draft |
+| `13_truthfulness_report.md` | Paper truthfulness verification report |
+| `14_review_report.md` | Simulated peer review |
+| `15_revision_plan.md` | Prioritized revision checklist |
 | `state.json` | Pipeline state and metrics |
 | `blocker_log.jsonl` | Blocker events and revision log |
 | `experiments/` | All experiment scripts |

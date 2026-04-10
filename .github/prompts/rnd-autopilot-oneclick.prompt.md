@@ -41,13 +41,12 @@ Execution rules:
 11. In final response, explicitly list `created_or_modified_code_files` and `executed_commands` before reporting metrics.
 12. **Closed-loop revision is mandatory in one-click mode**:
     - Default `enable_revision_loop=true` unless user explicitly disables it.
-    - Prefer running `research_pipeline/scripts/run-pipeline.ps1` with a generated/validated task file so the built-in revision loop executes.
-    - If pipeline script is unavailable, emulate equivalent loop steps explicitly: review -> adjust design -> re-implement/re-run -> rewrite -> re-review.
+    - Execute the revision loop directly via agent delegation: review -> adjust design -> re-implement/re-run -> rewrite -> re-review.
     - Do not mark revision as done without loop evidence in artifacts.
 13. **Revision evidence requirements** (must be machine-checkable):
     - `state.json` must contain `revision_round` (integer >= 1 when loop enabled).
     - `blocker_log.jsonl` must contain at least one `revision-iteration` event describing either convergence or patience stop.
-    - `12_review_report.md` must contain parseable scorecard line `## Overall Score: <number>/100`.
+    - `14_review_report.md` must contain parseable scorecard line `## Overall Score: <number>/100`.
 14. **Revision completion gate**:
     - Allowed stop conditions are only:
       1) score >= `revision_score_threshold`, or
@@ -68,7 +67,7 @@ Execution rules:
     - If still unmet after patience: proceed to writing with explicit `[EXPECTATION UNMET]` marker.
 18. **Truthfulness verification** (after writing, before review):
     - Cross-check paper claims (numbers, method descriptions, contribution statements) against `09_experiment_results.md`, `07_implementation_log.md`, and experiment code.
-    - If mismatches found: produce `14_truthfulness_report.md`, route back to WRITING_AGENT to fix the draft (up to `truthfulness_patience` rounds, default 2).
+    - If mismatches found: produce `13_truthfulness_report.md`, route back to WRITING_AGENT to fix the draft (up to `truthfulness_patience` rounds, default 2).
     - Only proceed to REVIEWER_AGENT after truthfulness passes or max rounds exhausted (attaching report).
 
 Final chat response must include:

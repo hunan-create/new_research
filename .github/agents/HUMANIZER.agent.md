@@ -18,7 +18,7 @@ Given a paper draft (markdown or LaTeX), systematically rewrite it so that mains
 
 1. **Locate the paper**
    - If user provides a file path, use it directly.
-   - Otherwise scan `research_runs/` for the latest `paper_draft_v*.md` or `11_paper_draft.md`.
+   - Otherwise scan `research_runs/` for the latest `paper_draft_v*.md` or `12_paper_draft.md`.
    - For `.tex` files, operate on the LaTeX source directly.
 
 2. **Read the full draft**

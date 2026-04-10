@@ -13,7 +13,8 @@ Given a user topic, deliver an iterative package that includes:
 3. innovation hypotheses and feasibility analysis
 4. experiment plan, implementation, debugging, and runs
 5. method adjustment based on results
-6. paper drafting, peer-style review, and revision plan
+6. theoretical analysis (complexity, convergence, error bounds)
+7. paper drafting, peer-style review, and revision plan
 
 ## Delegation Strategy
 Delegate phase work to specialized agents:
@@ -45,10 +46,11 @@ Required files:
 - `08_debug_log.md`
 - `09_experiment_results.md`
 - `10_iteration_decisions.md`
-- `11_paper_draft.md`
-- `12_review_report.md`
-- `13_revision_plan.md`
-- `14_truthfulness_report.md`
+- `11_theoretical_analysis.md`
+- `12_paper_draft.md`
+- `13_truthfulness_report.md`
+- `14_review_report.md`
+- `15_revision_plan.md`
 - `state.json`
 
 ## Control Logic
@@ -96,16 +98,38 @@ Before declaring experiment phase complete, satisfy all gates in sequence:
   b. Log a `result-expectation-mismatch` event to `blocker_log.jsonl`.
   c. Route back to INNOVATION_DESIGNER (revise hypotheses) → EXPERIMENT_ENGINEER (adjust and re-run) → re-check expectation gate.
   d. Allow up to `expectation_patience` rounds (default: 2) of this inner loop. If still unmet, proceed to writing with an explicit `[EXPECTATION UNMET]` marker in `10_iteration_decisions.md` explaining why the best available result is being used.
-- This gate runs AFTER the rigor gate and BEFORE writing.
+- This gate runs AFTER the rigor gate and BEFORE theoretical analysis.
 
-6. Writing and review loop
-- Draft paper from verified evidence and experiment logs.
+4. Theoretical analysis
+- Runs AFTER experiment results are verified (rigor gate + result expectation gate passed) and BEFORE writing.
+- Produce `11_theoretical_analysis.md` containing all applicable sections below.
+- **Required sections** (always include):
+  a. **Computational complexity**: time and space complexity of the proposed method. Compare with baselines from `02_sota_evidence_table.md` in a complexity comparison table.
+  b. **Formal problem definition**: precise mathematical formulation of the task, input/output spaces, and notational conventions used throughout.
+- **Conditional sections** (include when applicable to the method; skip with a one-line justification if not):
+  c. **Convergence analysis**: if the method involves iterative optimization or learning, prove or argue convergence. State assumptions explicitly (e.g., Lipschitz continuity, bounded gradients). Provide convergence rate if possible.
+  d. **Error bounds / approximation guarantees**: if the method involves approximation, sampling, or relaxation, derive an upper bound on the approximation error. Clearly state conditions under which the bound holds.
+  e. **Generalization analysis**: sample complexity or generalization bound (e.g., PAC-learning, Rademacher complexity) connecting training performance to test performance.
+  f. **Identifiability / consistency**: if the method makes structural claims (e.g., causal discovery, latent variable recovery), state and prove conditions under which the true structure is recoverable.
+  g. **Connection to established frameworks**: relate the proposed method to known theoretical frameworks (e.g., information-theoretic, kernel methods, variational inference) to situate contributions.
+- **Quality rules**:
+  - Every theorem/proposition must state assumptions before the claim. No "clearly" or "obviously" without proof.
+  - Distinguish rigorous proofs from proof sketches. Label proof sketches as such.
+  - If a full proof is infeasible within the pipeline, provide a proof sketch with a clear statement of what remains to be proven.
+  - Cross-reference experiment results: after each theoretical result, note which experiments in `09_experiment_results.md` empirically support or validate the theoretical prediction.
+- Mark `phase_status.theoretical_analysis` in `state.json` upon completion.
+- If the proposed method is purely empirical with no meaningful theoretical angle beyond complexity, write only the required sections (complexity + problem definition) and note `theoretical_depth: minimal` in `state.json`.
+
+5. Writing and review loop
+- Draft paper from verified evidence, experiment logs, and theoretical analysis (`11_theoretical_analysis.md`).
+- The paper must incorporate theoretical results: include a **Theoretical Analysis** section (or subsection) in the paper draft referencing proofs/bounds from `11_theoretical_analysis.md`. At minimum, computational complexity must appear in the paper.
 - **Truthfulness verification** (must pass before review):
-  a. Cross-check every quantitative claim in `11_paper_draft.md` against actual data in `09_experiment_results.md`. Flag any number/percentage/ranking that does not match the result table.
+  a. Cross-check every quantitative claim in `12_paper_draft.md` against actual data in `09_experiment_results.md`. Flag any number/percentage/ranking that does not match the result table.
   b. Cross-check method descriptions against `07_implementation_log.md` and experiment scripts. Flag any described component/technique that was never implemented or differs from the actual code.
   c. Cross-check contribution claims (abstract, introduction) against actual experimental evidence. Flag any claim not supported by results.
-  d. If mismatches are found:
-     - Write a `14_truthfulness_report.md` listing each mismatch with: claim text, actual evidence, verdict (match/mismatch/unverifiable).
+  d. Cross-check theoretical claims (theorems, bounds, complexity statements) in the paper against `11_theoretical_analysis.md`. Flag any theorem/bound that was not derived or differs from the analysis.
+  e. If mismatches are found:
+     - Write a `13_truthfulness_report.md` listing each mismatch with: claim text, actual evidence, verdict (match/mismatch/unverifiable).
      - Log a `truthfulness-verification-failed` event to `blocker_log.jsonl`.
      - Route back to WRITING_AGENT to correct the draft, incorporating the truthfulness report.
      - Re-run the truthfulness check. Allow up to `truthfulness_patience` rounds (default: 2).
@@ -123,10 +147,93 @@ Before declaring experiment phase complete, satisfy all gates in sequence:
 
 6. Completion gate for revision phase (must pass)
 - Do not mark `phase_status.revision = done` unless all evidence files exist:
-	- `12_review_report.md` contains parseable line: `## Overall Score: <number>/100`
-	- `13_revision_plan.md` references latest review concerns and concrete actions
+	- `14_review_report.md` contains parseable line: `## Overall Score: <number>/100`
+	- `15_revision_plan.md` references latest review concerns and concrete actions
 	- `state.json` contains `revision_round` (>=1 when loop enabled)
 	- `blocker_log.jsonl` contains a final `revision-iteration` stop reason
+
+## Command Execution Protocol
+
+When running experiment commands (setup, training, evaluation), follow this protocol directly via shell tool — no external scripts needed.
+
+### Retry with Exponential Back-off
+- **Max attempts**: `max_retries` from task file (default: 3).
+- **Base delay**: `retry_delay_sec` from task file (default: 30 seconds).
+- Delay formula: `base_delay × 2^(attempt-1)` (i.e. 30s, 60s, 120s).
+- On each failure: log the error message, attempt number, and delay before next retry to `08_debug_log.md`.
+- If all retries exhausted: log a `command-exhausted` event to `blocker_log.jsonl` with the command text, exit code, and stderr excerpt.
+
+### Command Template Variables
+Before executing any command from a task file or `06_experiment_plan.md`, resolve these placeholders:
+- `{{RUN_DIR}}` → absolute path to the current run directory
+- `{{RUN_DIR_REL}}` → workspace-relative path (forward slashes)
+- `{{TOPIC_SLUG}}` → value of `topic_slug`
+
+### Metric Parsing
+After each experiment or evalMetric command:
+1. Scan stdout for the **last** line matching a bare number: regex `([0-9]+\.?[0-9]*)`.
+2. Also scan `09_experiment_results.md` for `## Best Metric: <number>`.
+3. The parsed numeric value is the **current metric** for iteration decisions.
+4. If no number is parseable: log a warning to `08_debug_log.md` and treat as no-gain for the iteration loop.
+
+### Command Source Priority
+1. `commands.experiment` array in the task file (highest priority).
+2. Fenced code blocks (` ```bash `, ` ```shell `, ` ```python `) in `06_experiment_plan.md`.
+3. If neither source contains commands: scaffold stub scripts (see below), then execute them.
+
+## state.json Management
+
+Maintain `state.json` in the run directory as the single source of truth for run status. **Update it after every phase completion, not just at the end.**
+
+### Schema
+```json
+{
+  "run_id": "<leaf folder name>",
+  "topic_slug": "<slug>",
+  "topic": "<full topic>",
+  "started_at": "<ISO 8601>",
+  "phase_status": {
+    "retrieval": "done | skipped | done_fallback | blocked_strict",
+    "code_intel": "...",
+    "innovation": "...",
+    "scaffold": "...",
+    "experiment": "...",
+    "theoretical_analysis": "done | skipped | minimal",
+    "writing": "...",
+    "truthfulness": "passed | failed_with_report",
+    "review": "...",
+    "revision": "..."
+  },
+  "best_metric": 0.85,
+  "iter_round": 2,
+  "revision_round": 1,
+  "revision_score_trajectory": [72, 81, 90],
+  "blockers": []
+}
+```
+
+### Checkpoint Rules
+- Write `state.json` immediately after each phase status changes.
+- When resuming a run, read `state.json` and skip phases already marked `done` or `skipped` (unless forced).
+- If `state.json` is unreadable/corrupt: back up the file, reinitialize from defaults, and log a blocker.
+
+## blocker_log.jsonl Format
+
+Append one JSON object per line. Each entry:
+```json
+{"ts": "<ISO 8601>", "phase": "<phase_name>", "reason": "<description>", "meta": {"key": "value"}}
+```
+- `meta` is optional; use it for structured data (attempt count, metric values, error codes).
+- Never overwrite the file; always append.
+
+## Scaffolding Protocol
+
+Before executing experiments, ensure the engineering environment exists:
+
+1. **Directories**: create `experiments/` and `results/` under the run directory if missing.
+2. **Dependencies**: create `requirements.txt` listing packages from the task file's `commands.setup` or infer from imports.
+3. **Stub scripts**: if `commands.experiment` references Python scripts that don't exist yet, generate minimal runnable stubs (with argparse, seed support, and JSON output) so at least a smoke run succeeds. Record all created files in `07_implementation_log.md`.
+4. **Never overwrite existing code** — scaffolding only fills gaps.
 
 ## Non-negotiables
 - No fabricated citations or unverifiable claims.

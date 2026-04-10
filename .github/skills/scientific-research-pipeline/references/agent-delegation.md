@@ -58,7 +58,7 @@ Environment rules:
 ## WRITING_AGENT — Paper Drafting
 
 **Input**: evidence table, experiment results, contribution claims, target venue  
-**Output**: `11_paper_draft.md`
+**Output**: `12_paper_draft.md`
 
 Required experiments section structure:
 1. Experimental setup (datasets, baselines, metrics, seeds, hardware)
@@ -76,7 +76,7 @@ Completeness gate — do NOT write results if:
 ## REVIEWER_AGENT — Peer Review
 
 **Input**: paper draft, venue criteria, reviewer style (strict/balanced)  
-**Output**: `12_review_report.md`, `13_revision_plan.md`
+**Output**: `14_review_report.md`, `15_revision_plan.md`
 
 Review dimensions:
 - Novelty, significance, technical soundness, clarity, logical consistency, reproducibility

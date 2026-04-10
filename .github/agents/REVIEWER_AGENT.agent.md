@@ -40,7 +40,7 @@ You MUST always write a non-empty output file before terminating, even when bloc
 1. **Draft is a stub or very short**: Review whatever is present. Note the missing sections as a Major Issue and provide a template for each.
 2. **Venue criteria unavailable**: Apply general top-venue criteria (novelty, soundness, clarity, reproducibility) and label them `[venue: general]`.
 3. **Cannot assess technical soundness**: Mark soundness as `[unverifiable without code/data]` and escalate to a Major Issue.
-4. **Always append** this footer to both `12_review_report.md` and `13_revision_plan.md`:
+4. **Always append** this footer to both `14_review_report.md` and `15_revision_plan.md`:
    ```
    ## Downstream: Safe to proceed
    ```
