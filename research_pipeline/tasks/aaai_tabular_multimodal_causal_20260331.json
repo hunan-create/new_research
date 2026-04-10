@@ -1,0 +1,31 @@
+{
+  "topic": "Tabular foundation models, multimodal tabular data (column-as-modality), multimodal fusion, and causal discovery",
+  "topic_slug": "tabular-foundation-multimodal-causal",
+  "language": "中文、英文",
+  "year_range": "2022-2026",
+  "sources": ["arXiv", "Semantic Scholar", "Google Scholar"],
+  "target_venue": "AAAI",
+  "compute_budget_gpu_hours": 240,
+  "deadline": "unknown",
+  "success_metric": "Macro-AUROC >= 0.90 across two tabular benchmarks with mean+-std over 3 seeds",
+  "min_delta": 0.005,
+  "patience": 2,
+  "enable_revision_loop": true,
+  "revision_patience": 3,
+  "revision_convergence_threshold": 0.1,
+  "revision_score_threshold": 90,
+  "revision_patience_max_rounds": 5,
+  "baseline_repositories": [
+    "https://github.com/PriorLabs/TabPFN",
+    "https://github.com/salesforce/causalai"
+  ],
+  "commands": {
+    "setup": [
+      "C:/Users/39009/anaconda3/envs/icet/python.exe -m pip install --disable-pip-version-check -q numpy pandas scikit-learn tabpfn"
+    ],
+    "experiment": [
+      "C:/Users/39009/anaconda3/envs/icet/python.exe {{RUN_DIR_REL}}/experiments/run_cmcf.py --run-dir {{RUN_DIR_REL}} --seeds 11 22 33"
+    ],
+    "evalMetric": "C:/Users/39009/anaconda3/envs/icet/python.exe {{RUN_DIR_REL}}/experiments/print_best_auroc.py --summary {{RUN_DIR_REL}}/results/summary.json"
+  }
+}

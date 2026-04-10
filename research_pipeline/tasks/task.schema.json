@@ -1,0 +1,159 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RND Pipeline Task",
+  "description": "Defines a single research run for the RND pipeline orchestrator.",
+  "type": "object",
+  "required": ["topic", "topic_slug", "success_metric"],
+  "properties": {
+    "topic": {
+      "type": "string",
+      "description": "Full natural-language description of the research topic."
+    },
+    "topic_slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9\\-]+$",
+      "description": "URL-safe slug. Lowercase, hyphens only. Used as the run directory name."
+    },
+    "method_description": {
+      "type": "string",
+      "description": "Optional rough description of the proposed method or model architecture. When provided, INNOVATION_DESIGNER will refine and stress-test this method instead of designing from scratch, and EXPERIMENT_ENGINEER will use it to guide implementation."
+    },
+    "language": {
+      "type": "string",
+      "default": "English",
+      "description": "Output language for all agent artifacts."
+    },
+    "year_range": {
+      "type": "string",
+      "default": "2022-2026",
+      "description": "Inclusive year range for literature retrieval, e.g. '2021-2026'."
+    },
+    "sources": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["arXiv", "Semantic Scholar", "Google Scholar"],
+      "description": "Preferred paper retrieval sources."
+    },
+    "target_venue": {
+      "type": "string",
+      "description": "Target conference or journal, e.g. 'NeurIPS 2026'."
+    },
+    "compute_budget_gpu_hours": {
+      "type": "number",
+      "description": "Total GPU-hour budget for experiments."
+    },
+    "deadline": {
+      "type": "string",
+      "description": "Submission deadline in YYYY-MM-DD or free-text."
+    },
+    "success_metric": {
+      "type": "string",
+      "description": "Primary metric name and goal, e.g. 'AUROC >= 0.90 on holdout test set'."
+    },
+    "min_delta": {
+      "type": "number",
+      "default": 0.01,
+      "description": "Minimum metric improvement to count as 'gain' in the iteration loop."
+    },
+    "patience": {
+      "type": "integer",
+      "default": 2,
+      "description": "Consecutive rounds without gain before early-stop triggers in experiment iteration loop."
+    },
+    "revision_patience": {
+      "type": "integer",
+      "default": 3,
+      "description": "Maximum rounds of revision iteration after initial paper review."
+    },
+    "revision_convergence_threshold": {
+      "type": "number",
+      "default": 0.1,
+      "description": "If revision suggestions ratio drop below this fraction, consider converged and stop."
+    },
+    "enable_revision_loop": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable the revision feedback iteration loop (review → adjust → re-experiment → rewrite → review)."
+    },
+     "revision_score_threshold": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 100,
+       "default": 90,
+       "description": "Stop revision loop when paper overall score (0-100) meets or exceeds this threshold. REVIEWER_AGENT must output structured dimension scores in ## Paper Quality Scorecard section."
+     },
+     "revision_patience_max_rounds": {
+       "type": "integer",
+       "default": 5,
+       "description": "Maximum number of revision rounds (safeguard against endless loops if scoring is unreliable)."
+     },
+     "expectation_patience": {
+       "type": "integer",
+       "default": 2,
+       "description": "Maximum rounds for the result expectation gate inner loop. If the best metric still does not meet success_metric after this many rounds, proceed to writing with an [EXPECTATION UNMET] marker."
+     },
+     "truthfulness_patience": {
+       "type": "integer",
+       "default": 2,
+       "description": "Maximum rounds for truthfulness verification. If paper claims still have mismatches after this many rounds, proceed to review with the truthfulness report attached."
+     },
+     "baseline_repositories": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ],
+      "description": "GitHub URLs or 'default'. Passed to CODE_SCOUT."
+    },
+    "commands": {
+      "type": "object",
+      "description": "Shell commands to run during the experiment phase.",
+      "properties": {
+        "setup": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Package setup commands run once before experiments. Reuse the current Python environment by default; do not create new conda/venv environments unless explicitly requested."
+        },
+        "experiment": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Experiment commands executed with retry logic."
+        },
+        "evalMetric": {
+          "type": "string",
+          "description": "Command that prints a single numeric metric to stdout. Used for metric parsing."
+        }
+      }
+    },
+    "iteration": {
+      "type": "object",
+      "description": "Configuration for ITERATIVE_RND mode. When present, the pipeline operates on an existing run directory instead of starting from scratch.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["audit", "experiment", "paper", "review", "revision", "full"],
+          "default": "audit",
+          "description": "Iteration mode: audit (gap analysis), experiment (fill gaps), paper (update draft), review (re-review), revision (full revision cycle), full (all of the above)."
+        },
+        "run_dir": {
+          "type": "string",
+          "description": "Path to existing run directory. If omitted, auto-resolves latest run for topic_slug."
+        },
+        "experiment_gaps": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Specific experiment gaps to fill, e.g. ['CausalICL cross-graph D1-D9', 'statsOnly BN datasets']."
+        },
+        "paper_sections": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paper sections to update, e.g. ['Table 1', 'Table 3c', 'Section 4.2']."
+        },
+        "skip_phases": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Phases to skip in full mode, e.g. ['review'] to skip re-review."
+        }
+      }
+    }
+  }
+}
