@@ -43,6 +43,14 @@
 - [ ] `15_revision_plan.md` references latest review concerns
 - [ ] Stop condition documented (score threshold / patience / blocker)
 
+### Gate 8: LaTeX Submission Gate
+- [ ] Latest approved draft has been converted by `TEX_WRITER`
+- [ ] `paper/<venue>/main.tex` exists and is non-empty
+- [ ] `paper/<venue>/references.bib` exists and covers all citations used in the draft
+- [ ] `paper/<venue>/build.ps1` or `build.sh` exists for reproducible compilation
+- [ ] `paper/<venue>/submission_checklist.md` records venue, source draft, build status, and unresolved issues
+- [ ] `state.json` updated with `phase_status.latex`
+
 ## Rigor Enforcement Matrix
 
 | Check | Fail Action |

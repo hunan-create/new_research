@@ -18,9 +18,10 @@ Execution rules:
 2. If `draft` is empty, find the highest-version `paper_draft_v*.md` in the run directory.
 3. Read the entire draft, convert to LaTeX with venue-specific formatting.
 4. Generate `references.bib` from all cited works.
-5. Output all files to `<run_dir>/paper/<venue>/`.
+5. Output all files to `<run_dir>/paper/<venue>/`, including `submission_checklist.md`.
 6. Run compilation check if pdflatex is available.
-7. Report any issues (missing figures, undefined references, page count).
+7. Record build status, page-limit handling, and unresolved issues in `submission_checklist.md`.
+8. Report any issues (missing figures, undefined references, page count).
 
 Quick usage examples:
 

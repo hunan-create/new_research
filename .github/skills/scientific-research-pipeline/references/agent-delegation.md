@@ -94,7 +94,14 @@ Mandatory audits:
 ## TEX_WRITER — LaTeX Conversion
 
 **Input**: latest .md paper draft, target venue, run directory  
-**Output**: venue-formatted .tex manuscript + figures
+**Output**: `paper/<venue>/main.tex`, `references.bib`, build scripts, figures, and `submission_checklist.md`
+
+Procedure:
+1. Resolve the latest approved markdown draft to convert
+2. Apply the venue template, or `generic` fallback when the venue/style is unavailable
+3. Build the submission package under `paper/<venue>/`
+4. Run compilation check when the LaTeX toolchain is available
+5. Write `submission_checklist.md` with build/compliance status and remaining TODOs
 
 ## HUMANIZER — AI Detection Reduction
 

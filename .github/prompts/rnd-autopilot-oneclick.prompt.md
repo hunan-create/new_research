@@ -1,5 +1,5 @@
 ---
-description: "One-click full R&D pipeline run. Use when: you provide a topic and want automatic literature, code analysis, innovation design, experiments, paper drafting, review, and revision plan."
+description: "One-click full R&D pipeline run. Use when: you provide a topic and want automatic literature, code analysis, innovation design, experiments, paper drafting, review, revision plan, and a submission-ready `.tex` package."
 ---
 Run RND_AUTOPILOT in one-command mode.
 
@@ -27,7 +27,7 @@ Optional overrides:
 Execution rules:
 1. If optional overrides are empty, use RND_AUTOPILOT defaults.
 1.1 If `method_description` is provided, treat it as the user's proposed method sketch. Pass it verbatim to INNOVATION_DESIGNER (to anchor hypothesis generation around the described method instead of designing from scratch) and to EXPERIMENT_ENGINEER (to guide implementation). Write it into `01_topic_and_constraints.md` under a `## Proposed Method` section.
-2. Execute full lifecycle phases: retrieval -> code intelligence -> innovation -> experiment -> writing -> review -> revision.
+2. Execute full lifecycle phases: retrieval -> code intelligence -> innovation -> experiment -> writing -> review -> revision -> tex packaging.
 3. Auto-save outputs under `research_runs/<topic_slug>/<run_id>/` using required filenames in the agent spec.
 3.1 Path policy: all delegated-agent deliverables must remain under `research_runs/`; do not write final artifacts to any other top-level output folder.
 4. No fabricated citations or unverifiable claims.
@@ -69,10 +69,13 @@ Execution rules:
     - Cross-check paper claims (numbers, method descriptions, contribution statements) against `09_experiment_results.md`, `07_implementation_log.md`, and experiment code.
     - If mismatches found: produce `13_truthfulness_report.md`, route back to WRITING_AGENT to fix the draft (up to `truthfulness_patience` rounds, default 2).
     - Only proceed to REVIEWER_AGENT after truthfulness passes or max rounds exhausted (attaching report).
+19. After revision converges, invoke TEX_WRITER using `target_venue` if provided; otherwise use `generic` fallback. The run is not complete until `paper/<venue>/main.tex`, `references.bib`, and `submission_checklist.md` exist.
+20. Treat anonymous submission as the default for LaTeX packaging unless the user explicitly asks for camera-ready output.
 
 Final chat response must include:
 - selected defaults or overrides
 - key output file paths
+- LaTeX package path and build/compliance summary
 - best current method and metrics (or blocker summary)
 - top 3 risks and next validation actions
 - revision loop evidence summary (`revision_round`, stop condition, score trajectory)

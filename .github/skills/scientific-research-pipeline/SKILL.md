@@ -1,12 +1,12 @@
 ---
 name: scientific-research-pipeline
-description: "**WORKFLOW SKILL** — End-to-end scientific research lifecycle: topic → literature → innovation → experiment → paper → review → revision. Use when: 科研全流程, 从选题到投稿, 自动科研, research pipeline, run experiments, write paper, 文献检索, 创新点设计, 实验迭代, 论文撰写, 审稿修改, 补跑实验, 迭代更新, 降AI率, LaTeX排版. Covers: literature retrieval, SOTA analysis, innovation hypothesis, experiment execution, paper drafting, peer review simulation, revision loop, LaTeX conversion, and AI-detection reduction."
+description: "**WORKFLOW SKILL** — End-to-end scientific research lifecycle: topic → literature → innovation → experiment → paper → review → revision → tex submission package. Use when: 科研全流程, 从选题到投稿, 自动科研, research pipeline, run experiments, write paper, 文献检索, 创新点设计, 实验迭代, 论文撰写, 审稿修改, 补跑实验, 迭代更新, 降AI率, LaTeX排版, 投稿tex. Covers: literature retrieval, SOTA analysis, innovation hypothesis, experiment execution, paper drafting, peer review simulation, revision loop, LaTeX conversion, and AI-detection reduction."
 argument-hint: "Input: research topic (required), optional method description, target venue, compute budget, year range, language."
 ---
 
 # Scientific Research Pipeline
 
-Multi-agent orchestrated research workflow from topic input to submission-ready paper.
+Multi-agent orchestrated research workflow from topic input to a submission-ready paper package.
 
 ## When to Use
 
@@ -102,10 +102,15 @@ Invoke `ITERATIVE_RND` agent with:
   │  re-review → check convergence          │
   └─────────────────────────────────────────┘
        ▼
-┌────────────┐     ┌────────────┐
-│ TEX_WRITER │     │ HUMANIZER  │
-│ (LaTeX)    │     │ (降AI率)   │
-└────────────┘     └────────────┘
+┌────────────┐
+│ TEX_WRITER │──→ Venue-compliant `.tex` submission package
+│ (LaTeX)    │
+└──────┬─────┘
+       ▼
+┌────────────┐
+│ HUMANIZER  │──→ Optional post-processing on `.md` or `.tex`
+│ (降AI率)   │
+└────────────┘
 ```
 
 Orchestrators:
@@ -133,6 +138,7 @@ All artifacts are saved under `research_runs/<topic_slug>/<run_id>/`:
 | `13_truthfulness_report.md` | Paper truthfulness verification report |
 | `14_review_report.md` | Simulated peer review |
 | `15_revision_plan.md` | Prioritized revision checklist |
+| `paper/<venue>/` | Submission package with `main.tex`, `references.bib`, build scripts, and checklist |
 | `state.json` | Pipeline state and metrics |
 | `blocker_log.jsonl` | Blocker events and revision log |
 | `experiments/` | All experiment scripts |
@@ -165,10 +171,11 @@ The pipeline enforces sequential gates before proceeding:
 3. **Result Gate** — parseable metric line and complete result table written
 4. **Rigor Gate** — ≥2 datasets, ≥3 baselines, mean ± std, ablation present
 5. **Result Expectation Gate** — best metric compared against success_metric; unmet triggers innovation+experiment loop
-5. **Writing Gate** — results sections reference actual data; gaps marked with `[RESULTS INCOMPLETE]`
-6. **Truthfulness Gate** — paper claims cross-checked against code and results; mismatches trigger rewrite before review
-7. **Review Gate** — review report contains `## Overall Score: <number>/100`
-8. **Revision Gate** — `state.json` has `revision_round`, `blocker_log.jsonl` has stop reason
+6. **Writing Gate** — results sections reference actual data; gaps marked with `[RESULTS INCOMPLETE]`
+7. **Truthfulness Gate** — paper claims cross-checked against code and results; mismatches trigger rewrite before review
+8. **Review Gate** — review report contains `## Overall Score: <number>/100`
+9. **Revision Gate** — `state.json` has `revision_round`, `blocker_log.jsonl` has stop reason
+10. **LaTeX Gate** — `paper/<venue>/main.tex`, `references.bib`, and `submission_checklist.md` exist and match the latest draft
 
 ## Revision Loop
 
@@ -194,6 +201,7 @@ review → identify top issues → fix (experiment/writing/positioning)
 | `experiment` | Fill specific experiment gaps |
 | `paper` | Update draft with new results |
 | `review` | Run fresh review on updated draft |
+| `tex` | Generate or refresh venue-compliant LaTeX submission package |
 | `revision` | Full cycle: review → fix → rewrite → re-review |
 | `full` | All above in sequence |
 

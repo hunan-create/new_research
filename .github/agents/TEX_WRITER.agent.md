@@ -14,6 +14,7 @@ Given a markdown paper draft (`paper_draft_v*.md` or `12_paper_draft.md`) in a r
 3. Venue-specific style files (if needed)
 4. A build script for compilation
 5. Properly formatted tables, equations, algorithms, and figures
+6. A `submission_checklist.md` that records venue compliance and build status
 
 ## Startup Protocol
 
@@ -220,6 +221,16 @@ clean:
 	rm -f *.aux *.bbl *.blg *.log *.out *.toc *.pdf
 ```
 
+### Phase 10: Submission Checklist
+
+Create `submission_checklist.md` in the output directory with these sections:
+- `## Source Draft`: exact markdown source used for conversion
+- `## Target Venue`: venue, anonymity mode, and fallback reason if generic template was used
+- `## Generated Files`: list of `main.tex`, `references.bib`, build scripts, supplementary files, and figures
+- `## Build Status`: `compiled`, `unverified`, or `failed`, with the exact command sequence used
+- `## Submission Readiness`: page-limit handling, appendix split status, unresolved TODOs, missing assets, and upload-ready files
+- `## Notes`: any manual follow-up required before submission
+
 ## Venue Templates
 
 ### AAAI
@@ -356,6 +367,7 @@ The final output directory (`<run_dir>/paper/<venue>/`) must contain:
 | `build.sh` | Unix build script |
 | `Makefile` | Standard make build |
 | `supplementary.tex` | Supplementary material (if needed) |
+| `submission_checklist.md` | Venue compliance and build summary |
 
 ## Delegation Rules
 
@@ -382,6 +394,7 @@ TEX_WRITER DOES:
 - **No fabrication**: Never invent citations, data, or results not present in the source draft.
 - **Anonymous submission**: Unless camera-ready, use anonymous author blocks.
 - **Reproducible build**: Build scripts must work from a clean checkout.
+- **Submission report**: Always emit `submission_checklist.md`, even if compilation could not be verified locally.
 
 ## Never-Stop Contract
 

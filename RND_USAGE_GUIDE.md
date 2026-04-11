@@ -1,6 +1,6 @@
 # 自动科研多 Agent 使用指南
 
-本指南用于当前工作区的多 Agent 科研闭环，覆盖从主题输入到论文修改的完整流程。
+本指南用于当前工作区的多 Agent 科研闭环，覆盖从主题输入到论文修改与 `.tex` 投稿包生成的完整流程。
 
 ## 1. 适用场景
 
@@ -45,7 +45,7 @@ Topic: 你的研究主题
 Method description: （可选）大致描述你想用的方法或模型架构
 ```
 
-默认行为：自动执行全流程阶段（含实验命令执行），并在可行时补齐缺失的最小可运行实验脚本后完成 smoke run。
+默认行为：自动执行全流程阶段（含实验命令执行），并在可行时补齐缺失的最小可运行实验脚本后完成 smoke run。若提供 `Target venue/task`，流程在修订收敛后会自动生成对应会议格式的 `.tex` 投稿包；未提供时会生成 `generic` 版本。
 建议开启严格执行：`Strict execution: true`。开启后若缺少可执行代码、数据或命令，流程会直接报错并停止，不再用 stub 继续。
 
 可选覆盖参数（留空则使用默认值）：
@@ -177,6 +177,7 @@ HUMANIZER 的改写策略：
 14. 14_review_report.md
 15. 15_revision_plan.md
 16. state.json
+17. `paper/<venue>/`（投稿 `.tex` 包，含 `main.tex`、`references.bib`、编译脚本、`submission_checklist.md`）
 
 ### 4.2 研究模式输出
 目录：research_runs/<topic_slug>/research_autopilot/
@@ -274,6 +275,9 @@ HUMANIZER 的改写策略：
  └────────────────────────────────────────────────────────────┘
     │
     ▼
+ [TEX_WRITER]  生成 `paper/<venue>/main.tex` 与投稿检查清单
+   │
+   ▼
   归档 state.json，全流程结束
 ```
 
@@ -286,6 +290,7 @@ HUMANIZER 的改写策略：
 6. 论文草稿完成后，**【NEW】真实性检验**会自动交叉验证论文中的所有数据宣称和方法描述是否与代码实现、实验结果一致。若发现不一致，会产出 `13_truthfulness_report.md` 并要求 WRITING_AGENT 修正（最多 `truthfulness_patience` 轮）。
 7. 论文真实性通过后进入评审。用 `14_review_report.md` 中的批评意见驱动修改反馈循环。
 8. 修改反馈循环会自动在「重大问题数」足够少时停止，或达到 `revision_patience` 轮次上限。
+9. 修订收敛后，检查 `paper/<venue>/submission_checklist.md`，确认 `.tex` 投稿包已经生成且记录了编译状态、页数处理与待补资源。
 
 ## 5.5 结果预期检验门控（NEW）
 
