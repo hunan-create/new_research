@@ -1,0 +1,12 @@
+# Ignore everything
+*
+
+# But not .gitignore itself
+!.gitignore
+
+# Keep .github/ and all its contents
+!.github/
+!.github/**
+
+# Keep RND_USAGE_GUIDE.md
+!RND_USAGE_GUIDE.md

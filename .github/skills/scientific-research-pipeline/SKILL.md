@@ -179,6 +179,8 @@ review → identify top issues → fix (experiment/writing/positioning)
   → update paper draft (new version) → re-review → check convergence
 ```
 
+**Scoring fairness**: 修订后分数不一定上升。若修订引入新问题、新实验暴露方法弱点、或评审发现之前遗漏的缺陷，分数可以下降。评审必须独立于历史分数，仅基于当前稿件质量打分。
+
 **Stop conditions** (any one triggers stop):
 1. Score ≥ `revision_score_threshold` (default: 75/100)
 2. Reached `revision_patience_max_rounds` (default: 5)
