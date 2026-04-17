@@ -5,7 +5,7 @@ Run ITERATIVE_RND to iterate on an existing project.
 
 Input:
 - Run directory: {{run_dir}}
-- Iteration mode: {{mode}}  (audit | experiment | paper | review | tex | revision | full)
+- Iteration mode: {{mode}}  (audit | experiment | theory | paper | review | tex | revision | full)
 - Specific instructions: {{instructions}}
 
 Optional overrides:
@@ -39,6 +39,14 @@ Mode: audit
 Run directory: research_runs/tabular-foundation-multimodal-causal/20260331_run01
 Mode: experiment
 Instructions: 补跑 CausalICL cross-graph 实验 (D1-D9)
+```
+
+### Update theoretical analysis after new experiments
+```
+@ITERATIVE_RND
+Run directory: research_runs/tabular-foundation-multimodal-causal/20260331_run01
+Mode: theory
+Instructions: 新实验结果已产出，更新理论-实验桥接部分
 ```
 
 ### Update paper with new results

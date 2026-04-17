@@ -26,24 +26,32 @@
 - [ ] At least one ablation row exists
 - [ ] If any fails → `rigor_incomplete`, do NOT proceed to writing
 
-### Gate 5: Writing Gate
+### Gate 5: Theoretical Analysis Gate
+- [ ] `11_theoretical_analysis.md` exists and is non-empty
+- [ ] Part I present: formal problem definition + theoretical foundations + principle-to-design mapping table
+- [ ] Part II present: computational complexity analysis with baseline comparison table
+- [ ] Part III present: theory-experiment bridge table cross-referencing `09_experiment_results.md`
+- [ ] Conditional sections either included or skipped with justification
+- [ ] `state.json` updated with `phase_status.theoretical_analysis`
+
+### Gate 6: Writing Gate
 - [ ] All experiment results reflected in paper draft
 - [ ] Every quantitative claim references a specific table cell
 - [ ] Experiments section follows required structure
 - [ ] `[RESULTS INCOMPLETE]` placeholders for any gaps
 
-### Gate 6: Review Gate
+### Gate 7: Review Gate
 - [ ] `14_review_report.md` contains `## Overall Score: <number>/100`
 - [ ] Both strict and moderate reviewer perspectives included
 - [ ] Logical consistency audit performed
 
-### Gate 7: Revision Gate
+### Gate 8: Revision Gate
 - [ ] `state.json` contains `revision_round` ≥ 1
 - [ ] `blocker_log.jsonl` contains `revision-iteration` stop event
 - [ ] `15_revision_plan.md` references latest review concerns
 - [ ] Stop condition documented (score threshold / patience / blocker)
 
-### Gate 8: LaTeX Submission Gate
+### Gate 9: LaTeX Submission Gate
 - [ ] Latest approved draft has been converted by `TEX_WRITER`
 - [ ] `paper/<venue>/main.tex` exists and is non-empty
 - [ ] `paper/<venue>/references.bib` exists and covers all citations used in the draft

@@ -44,6 +44,7 @@ Invoke `ITERATIVE_RND` agent with:
 | Open-source code analysis | `CODE_SCOUT` | 分析开源代码, baseline repo |
 | Innovation hypothesis design | `INNOVATION_DESIGNER` | 构造创新点, novelty design |
 | Experiment implementation & runs | `EXPERIMENT_ENGINEER` | 设计实验, 运行实验 |
+| Theoretical analysis (principles → design) | `THEORETICAL_ANALYST` | 理论分析, 从原理到设计, theoretical analysis |
 | Paper drafting | `WRITING_AGENT` | 撰写论文, paper draft |
 | Peer review simulation | `REVIEWER_AGENT` | 论文评审, 审稿意见 |
 | LaTeX conversion | `TEX_WRITER` | 生成LaTeX, md转latex |
@@ -78,11 +79,16 @@ Invoke `ITERATIVE_RND` agent with:
 │   Compare best metric vs success_metric  │
 │   Unmet? → loop back to INNOVATION +     │
 │            EXPERIMENT (max patience rds)  │
-│   Met? → proceed to writing              │
+│   Met? → proceed to theoretical analysis │
 └──────┬───────────────────────────────────┘
        ▼
+┌──────────────────────┐
+│ THEORETICAL_ANALYST  │──→ Principles → design mapping, complexity,
+│ (从原理到设计)        │    convergence, bounds, theory-experiment bridge
+└──────┬───────────────┘
+       ▼
 ┌───────────────┐
-│ WRITING_AGENT │──→ Paper draft (all sections)
+│ WRITING_AGENT │──→ Paper draft (all sections, incorporating theoretical analysis)
 └──────┬────────┘
        ▼
 ┌──────────────────────────────────────────┐
@@ -171,11 +177,12 @@ The pipeline enforces sequential gates before proceeding:
 3. **Result Gate** — parseable metric line and complete result table written
 4. **Rigor Gate** — ≥2 datasets, ≥3 baselines, mean ± std, ablation present
 5. **Result Expectation Gate** — best metric compared against success_metric; unmet triggers innovation+experiment loop
-6. **Writing Gate** — results sections reference actual data; gaps marked with `[RESULTS INCOMPLETE]`
-7. **Truthfulness Gate** — paper claims cross-checked against code and results; mismatches trigger rewrite before review
-8. **Review Gate** — review report contains `## Overall Score: <number>/100`
-9. **Revision Gate** — `state.json` has `revision_round`, `blocker_log.jsonl` has stop reason
-10. **LaTeX Gate** — `paper/<venue>/main.tex`, `references.bib`, and `submission_checklist.md` exist and match the latest draft
+6. **Theoretical Analysis Gate** — `11_theoretical_analysis.md` exists with principles-to-design mapping, complexity analysis, and theory-experiment bridge
+7. **Writing Gate** — results sections reference actual data; gaps marked with `[RESULTS INCOMPLETE]`
+8. **Truthfulness Gate** — paper claims cross-checked against code and results; mismatches trigger rewrite before review
+9. **Review Gate** — review report contains `## Overall Score: <number>/100`
+10. **Revision Gate** — `state.json` has `revision_round`, `blocker_log.jsonl` has stop reason
+11. **LaTeX Gate** — `paper/<venue>/main.tex`, `references.bib`, and `submission_checklist.md` exist and match the latest draft
 
 ## Revision Loop
 

@@ -27,7 +27,7 @@ Optional overrides:
 Execution rules:
 1. If optional overrides are empty, use RND_AUTOPILOT defaults.
 1.1 If `method_description` is provided, treat it as the user's proposed method sketch. Pass it verbatim to INNOVATION_DESIGNER (to anchor hypothesis generation around the described method instead of designing from scratch) and to EXPERIMENT_ENGINEER (to guide implementation). Write it into `01_topic_and_constraints.md` under a `## Proposed Method` section.
-2. Execute full lifecycle phases: retrieval -> code intelligence -> innovation -> experiment -> writing -> review -> revision -> tex packaging.
+2. Execute full lifecycle phases: retrieval -> code intelligence -> innovation -> experiment -> theoretical analysis -> writing -> review -> revision -> tex packaging.
 3. Auto-save outputs under `research_runs/<topic_slug>/<run_id>/` using required filenames in the agent spec.
 3.1 Path policy: all delegated-agent deliverables must remain under `research_runs/`; do not write final artifacts to any other top-level output folder.
 4. No fabricated citations or unverifiable claims.
@@ -80,4 +80,5 @@ Final chat response must include:
 - top 3 risks and next validation actions
 - revision loop evidence summary (`revision_round`, stop condition, score trajectory)
 - result expectation gate outcome (met / unmet after N rounds / skipped)
+- theoretical analysis summary (depth level, key theoretical results, theory-experiment alignment status)
 - truthfulness verification outcome (passed / corrected in N rounds / attached report)

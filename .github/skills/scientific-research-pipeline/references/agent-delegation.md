@@ -55,9 +55,39 @@ Environment rules:
 - Set `KMP_DUPLICATE_LIB_OK=TRUE` on Windows
 - Never create new environments unless explicitly asked
 
+## THEORETICAL_ANALYST — Theoretical Analysis (Principles → Design)
+
+**Input**: topic and constraints, SOTA evidence, innovation hypotheses, feasibility matrix, implementation log, experiment results  
+**Output**: `11_theoretical_analysis.md`
+
+Procedure:
+1. Read `01_topic_and_constraints.md`, `02_sota_evidence_table.md`, `04_innovation_hypotheses.md`, `05_feasibility_matrix.md`, `07_implementation_log.md`, `09_experiment_results.md`
+2. **Part I — Principles to Design**:
+   - Write formal problem definition with mathematical notation
+   - Identify theoretical foundations the method builds upon (cite sources)
+   - Map each design choice to its motivating theoretical principle (structured table)
+   - Formalize the proposed method as an algorithm or optimization problem
+3. **Part II — Formal Analysis**:
+   - Computational complexity analysis (required): time/space, comparison table with baselines
+   - Convergence analysis (conditional): if method involves iterative optimization
+   - Error bounds (conditional): if method involves approximation or sampling
+   - Generalization analysis (conditional): if method involves statistical learning
+   - Identifiability (conditional): if method makes structural claims
+4. **Part III — Theory-Experiment Bridge**:
+   - For each theoretical result, state what it predicts about experiments
+   - Cross-reference specific results in `09_experiment_results.md`
+   - Present validation status in a structured table
+5. Mark `phase_status.theoretical_analysis` in `state.json`
+
+Quality rules:
+- Every theorem must state assumptions before the claim
+- Distinguish rigorous proofs from proof sketches (label explicitly)
+- No fabricated theorems; mark conjectures as `[Conjecture]`
+- Cross-reference experiment results after each theoretical result
+
 ## WRITING_AGENT — Paper Drafting
 
-**Input**: evidence table, experiment results, contribution claims, target venue  
+**Input**: evidence table, experiment results, theoretical analysis, contribution claims, target venue  
 **Output**: `12_paper_draft.md`
 
 Required experiments section structure:

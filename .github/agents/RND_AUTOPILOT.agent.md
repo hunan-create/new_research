@@ -23,6 +23,7 @@ Delegate phase work to specialized agents:
 - `CODE_SCOUT`: repository mapping, reproducibility and extension points
 - `INNOVATION_DESIGNER`: novelty design and risk/feasibility matrix
 - `EXPERIMENT_ENGINEER`: implementation, debugging, running, and iteration logs
+- `THEORETICAL_ANALYST`: theoretical analysis from principles to design, complexity, convergence, bounds
 - `WRITING_AGENT`: manuscript drafting
 - `REVIEWER_AGENT`: review and revision package
 - `TEX_WRITER`: venue-compliant `.tex` submission package generation
@@ -109,23 +110,31 @@ Before declaring experiment phase complete, satisfy all gates in sequence:
 
 4. Theoretical analysis
 - Runs AFTER experiment results are verified (rigor gate + result expectation gate passed) and BEFORE writing.
-- Produce `11_theoretical_analysis.md` containing all applicable sections below.
-- **Required sections** (always include):
-  a. **Computational complexity**: time and space complexity of the proposed method. Compare with baselines from `02_sota_evidence_table.md` in a complexity comparison table.
-  b. **Formal problem definition**: precise mathematical formulation of the task, input/output spaces, and notational conventions used throughout.
-- **Conditional sections** (include when applicable to the method; skip with a one-line justification if not):
-  c. **Convergence analysis**: if the method involves iterative optimization or learning, prove or argue convergence. State assumptions explicitly (e.g., Lipschitz continuity, bounded gradients). Provide convergence rate if possible.
-  d. **Error bounds / approximation guarantees**: if the method involves approximation, sampling, or relaxation, derive an upper bound on the approximation error. Clearly state conditions under which the bound holds.
-  e. **Generalization analysis**: sample complexity or generalization bound (e.g., PAC-learning, Rademacher complexity) connecting training performance to test performance.
-  f. **Identifiability / consistency**: if the method makes structural claims (e.g., causal discovery, latent variable recovery), state and prove conditions under which the true structure is recoverable.
-  g. **Connection to established frameworks**: relate the proposed method to known theoretical frameworks (e.g., information-theoretic, kernel methods, variational inference) to situate contributions.
+- **Delegate to `THEORETICAL_ANALYST`** with the run directory path and references to all input artifacts (`01_topic_and_constraints.md`, `02_sota_evidence_table.md`, `04_innovation_hypotheses.md`, `05_feasibility_matrix.md`, `07_implementation_log.md`, `09_experiment_results.md`).
+- THEORETICAL_ANALYST produces `11_theoretical_analysis.md` containing:
+  - **Part I — From Principles to Design** (required):
+    a. **Formal problem definition**: precise mathematical formulation of the task, input/output spaces, and notational conventions.
+    b. **Theoretical foundations**: core theoretical principles the method builds upon, with citations from `02_sota_evidence_table.md`.
+    c. **Principle-to-design mapping**: structured table mapping each design choice to its motivating theoretical principle, justification, and alternatives considered.
+    d. **Method formalization**: full mathematical description as algorithm or optimization problem.
+  - **Part II — Formal Analysis**:
+    e. **Computational complexity** (required): time and space complexity of the proposed method. Compare with baselines from `02_sota_evidence_table.md` in a complexity comparison table.
+    f. **Convergence analysis** (conditional): if the method involves iterative optimization or learning, prove or argue convergence. State assumptions explicitly. Provide convergence rate if possible.
+    g. **Error bounds / approximation guarantees** (conditional): if the method involves approximation, sampling, or relaxation, derive an upper bound on the approximation error.
+    h. **Generalization analysis** (conditional): sample complexity or generalization bound connecting training performance to test performance.
+    i. **Identifiability / consistency** (conditional): if the method makes structural claims, state and prove conditions under which the true structure is recoverable.
+  - **Part III — Theory-Experiment Bridge** (required):
+    j. **Theoretical predictions vs empirical results**: cross-reference experiments in `09_experiment_results.md` that validate theoretical predictions, in a structured table.
+    k. **Connection to established frameworks**: relate the method to known theoretical frameworks.
+    l. **Limitations of the theoretical analysis**: gaps between assumptions and practice, open questions.
 - **Quality rules**:
   - Every theorem/proposition must state assumptions before the claim. No "clearly" or "obviously" without proof.
   - Distinguish rigorous proofs from proof sketches. Label proof sketches as such.
   - If a full proof is infeasible within the pipeline, provide a proof sketch with a clear statement of what remains to be proven.
   - Cross-reference experiment results: after each theoretical result, note which experiments in `09_experiment_results.md` empirically support or validate the theoretical prediction.
 - Mark `phase_status.theoretical_analysis` in `state.json` upon completion.
-- If the proposed method is purely empirical with no meaningful theoretical angle beyond complexity, write only the required sections (complexity + problem definition) and note `theoretical_depth: minimal` in `state.json`.
+- If THEORETICAL_ANALYST is unavailable, perform the analysis directly while keeping the same output schema.
+- If the proposed method is purely empirical with no meaningful theoretical angle beyond complexity, write only Part I and the required sections of Part II (complexity + problem definition) and note `theoretical_depth: minimal` in `state.json`.
 
 5. Writing and review loop
 - Draft paper from verified evidence, experiment logs, and theoretical analysis (`11_theoretical_analysis.md`).
